@@ -20,6 +20,7 @@
 	<td><c:out value="${recipe.name}"/></td>
 	<td><c:out value="${recipe.ingredients}"/></td>
 	<td><c:out value="${recipe.guide}"/></td>
+	<td><a class="btn btn-primary" href="edit_recipe?id=<c:out value='${recipe.id}' />">Edit</a></td>
 	<td><a class="btn btn-danger" href="delete_recipe?id=<c:out value='${recipe.id}' />">Delete</a></td>
 	</tr>
 </c:forEach>

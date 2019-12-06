@@ -24,9 +24,15 @@ public class ListRecipesServlet extends HttpServlet {
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	
 		recipeDAO recipedao = new recipeDAO();
+		
+		// Arraylist to contain all entitys from the database
+		
 		ArrayList<Recipe>recipe = recipedao.findAll();
+		
+		// Setting attribute to access data in jsp web-file
+		
 		request.setAttribute("recipe", recipe);
 		String jsp = "/view/list-recipes.jsp";
 		getServletContext().getRequestDispatcher(jsp).forward(request, response);

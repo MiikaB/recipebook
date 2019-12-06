@@ -20,11 +20,16 @@ public class NewRecipeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		// Get call to be sent to a page that contains html form for a new recipe entity
+		
 		String jsp = "/view/new-recipe.jsp";
 		getServletContext().getRequestDispatcher(jsp).forward(request, response);
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		// Post call to create new recipe entity from submitted form data
 		
 		String name = request.getParameter("name");
 		String ingrediants = request.getParameter("ingredients");
@@ -38,6 +43,9 @@ public class NewRecipeServlet extends HttpServlet {
 		String errorcode = null;
 		
 	try {
+		
+		// Sending the new recipe entity to database
+		
 		recipedao.addRecipe(recipe);	
 	} catch (Exception e) {
 		errorcode = "Upsie! Error happened in the database :(";

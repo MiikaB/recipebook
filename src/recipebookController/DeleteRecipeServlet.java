@@ -19,13 +19,22 @@ public class DeleteRecipeServlet extends HttpServlet{
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+			
+			// Fetch requested id parameter
+			
 			String idStr = request.getParameter("id");
 			int id = new Integer(idStr);
 			recipeDAO recipedao = new recipeDAO();
+			
+			// Calling function removeRecipe with id parameter
+			
 			recipedao.removeRecipe(id);
 		} catch (SQLException e) {
 				System.out.println("::Error happened:: " + e.getMessage());
 		}
+		
+		// Redirect to list all recipes updated with current deletion
+		
 			response.sendRedirect("list-recipes");
 	}
 }

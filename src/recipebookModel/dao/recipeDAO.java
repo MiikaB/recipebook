@@ -1,5 +1,5 @@
 
-// Object for reading, inserting, deleting entity 's from the database
+// Object for reading, editing, deleting, adding entity 's from the database
 
 package recipebookModel.dao;
 
@@ -15,17 +15,20 @@ import recipebookModel.Recipe;
 
 
 public class recipeDAO extends DataAccessObject {
+	
+		// Method for reading all the recipes from the database
+		// and setting them in an array
 
 		public ArrayList<Recipe> findAll() {	
-			Connection conn = null;
+			Connection connection = null;
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
 			ArrayList<Recipe> recipies = new ArrayList<Recipe>();
 			Recipe recipe = null; 
 			try {
-				conn = getConnection();
+				connection = getConnection();
 				String sqlSelect = "SELECT id, name, ingredients, guide FROM recipe;";
-				stmt = conn.prepareStatement(sqlSelect);
+				stmt = connection.prepareStatement(sqlSelect);
 				rs = stmt.executeQuery();
 				while (rs.next()) {
 					recipe = readRecipe(rs);
@@ -34,17 +37,19 @@ public class recipeDAO extends DataAccessObject {
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			} finally {
-				close(rs, stmt, conn);
+				close(rs, stmt, connection);
 			}
 			return recipies;
 		}
+		
+		// Add method for inserting new recipe to the database
 		
 		public void addRecipe(Recipe recipe) throws SQLException {
 			Connection connection = null;
 			PreparedStatement stmtInsert = null;
 			try {
 				connection = getConnection();
-				String sqlInsert = "INSERT INTO recipe(id, name, ingredients, guide) VALUES (?, ?, ?, ?)";
+				String sqlInsert = "INSERT INTO recipe(id, name, ingredients, guide) VALUES (?, ?, ?, ?);";
 				stmtInsert = connection.prepareStatement(sqlInsert);
 				stmtInsert.setInt(1, recipe.getId());
 				stmtInsert.setString(2, recipe.getName());
@@ -58,12 +63,14 @@ public class recipeDAO extends DataAccessObject {
 			}
 		}
 		
+		//remove method for removing recipes from the database
+		
 		public void removeRecipe(int id) throws SQLException {
  			Connection connection = null;
  			PreparedStatement stmtDelete = null;
  			try {
  				connection = getConnection();
- 				String sqlInsert = "DELETE FROM recipe WHERE id = ?";
+ 				String sqlInsert = "DELETE FROM recipe WHERE id = ?;";
  				stmtDelete = connection.prepareStatement(sqlInsert);
  				stmtDelete.setInt(1, id);;
  				stmtDelete.executeUpdate();
@@ -73,6 +80,51 @@ public class recipeDAO extends DataAccessObject {
  				close(stmtDelete, connection);
  			}
  		}
+		
+		public void editRecipe(Recipe recipe) throws SQLException {
+ 			Connection connection = null;
+ 			PreparedStatement stmtUpdate = null;
+ 			try {
+ 				connection = getConnection();
+ 				String sqlSelect = "UPDATE recipe SET id = ?, name = ?, ingredients = ?, guide = ? WHERE id = ?;";
+				stmtUpdate = connection.prepareStatement(sqlSelect);
+				stmtUpdate.setInt(1, recipe.getId());
+				stmtUpdate.setString(2, recipe.getName());
+				stmtUpdate.setString(3, recipe.getIngredients());
+				stmtUpdate.setString(4, recipe.getGuide());
+				stmtUpdate.setInt(5, recipe.getId());
+				stmtUpdate.executeUpdate();
+ 			} catch (SQLException e) {
+ 				throw new RuntimeException(e);
+ 			} finally {
+ 				close(stmtUpdate, connection);
+ 			}
+		}
+		
+		//Method to find a recipe with id and return its values
+		
+		public Recipe findRecipe(int id) throws SQLException {
+			Connection connection = null;
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			Recipe recipe = null; 
+ 			try {
+ 				connection = getConnection();
+ 				String sqlSelect = "SELECT * FROM recipe WHERE id = ?;";
+ 				stmt = connection.prepareStatement(sqlSelect);
+ 				stmt.setInt(1, id);;
+				rs = stmt.executeQuery();
+				rs.next();
+				recipe = readRecipe(rs);
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			} finally {
+				close(rs, stmt, connection);
+			}
+			return recipe;
+		}
+		
+		// Get-method
 
 		private Recipe readRecipe(ResultSet rs) {	
 			try {
